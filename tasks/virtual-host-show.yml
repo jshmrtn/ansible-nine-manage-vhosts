@@ -1,0 +1,6 @@
+---
+# file: tasks/virtual-host-show.yml
+
+- name: Show apache vhost
+  shell:
+    sudo nine-manage-vhosts virtual-host show {{ domain }}

@@ -1,0 +1,9 @@
+---
+# file: tasks/alias-create.yml
+
+- name: Create apache alias
+  shell:
+    sudo nine-manage-vhosts alias create {{ item.aliasdomain }} --virtual-host={{ item.targetdomain }}
+  notify: Restart Apache
+  with_items: apache_aliases
+  when: item.alias_status == 1 and item.alias_create == 1

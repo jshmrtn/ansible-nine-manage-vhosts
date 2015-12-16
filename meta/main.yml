@@ -1,0 +1,21 @@
+---
+
+dependencies: []
+
+galaxy_info:
+  author: Jeremy J. Zahner
+  company: JOSHMARTIN
+  description: Ansible role for utilizing nine.ch's nine-manage-vhosts CLI.
+  license: GNU GENERAL PUBLIC LICENSE (V2)
+  min_ansible_version: 1.6
+  platforms:
+  - name: Ubuntu
+    versions:
+    - 14.04
+  categories:
+  - apache
+  - ubuntu
+  - vhosts
+  - managed-server
+  - management
+  - nine.ch

@@ -1,0 +1,11 @@
+---
+# file: tasks/virtual-host-update.yml
+
+- name: Update apache vhosts
+  shell:
+    sudo nine-manage-vhosts virtual-host update {{ item.0.domain }} --webroot={{ item.0.documentroot }} --template={{ item.0.template | default ('default') }}
+  notify: Restart Apache
+  with_together:
+    - apache_vhosts
+    - apache_vhost_conf.results
+  when: item.1.stat.exists == True and item.0.vhost_status == 2

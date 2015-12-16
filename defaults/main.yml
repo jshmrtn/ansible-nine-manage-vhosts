@@ -1,0 +1,20 @@
+---
+# file: defaults/main.yml
+
+apache_daemon: apache2
+
+apache_vhosts: []
+  # - {
+  #   servername: example.com,
+  #   serveralias: www.example.com,
+  #   documentroot: /home/www-data/example.com,
+  #   vhost_status: 1
+  # }
+
+apache_aliases: []
+  # - {
+  #   aliasdomain:  example-site.com,
+  #   targetdomain: example.com,
+  #   alias_status: 1,
+  #   alias_create: 0
+  # }

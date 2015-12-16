@@ -1,0 +1,6 @@
+---
+# file: tasks/virtual-host-list.yml
+
+- name: List apache vhosts
+  shell:
+    sudo nine-manage-vhosts virtual-host list

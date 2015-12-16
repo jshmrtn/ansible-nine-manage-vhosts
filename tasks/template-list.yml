@@ -1,0 +1,6 @@
+---
+# file: tasks/template-list.yml
+
+- name: List apache vhost templates
+  shell:
+    sudo nine-manage-vhosts template list

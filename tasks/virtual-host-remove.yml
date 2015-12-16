@@ -1,0 +1,11 @@
+---
+# file: tasks/virtual-host-remove.yml
+
+- name: Remove apache vhosts
+  shell:
+    sudo nine-manage-vhosts virtual-host remove {{ item.0.domain }}
+  notify: Restart Apache
+  with_together:
+    - apache_vhosts
+    - apache_vhost_conf.results
+  when: item.1.stat.exists == True and item.0.vhost_status == 0
