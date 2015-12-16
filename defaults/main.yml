@@ -5,9 +5,9 @@ apache_daemon: apache2
 
 apache_vhosts: []
   # - {
-  #   servername: example.com,
-  #   serveralias: www.example.com,
+  #   domain: example.com,
   #   documentroot: /home/www-data/example.com,
+  #   template: default
   #   vhost_status: 1
   # }
 
