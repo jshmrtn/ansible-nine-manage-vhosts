@@ -1,11 +1,38 @@
 ---
 # file: tasks/virtual-host-create.yml
 
-- name: Create apache vhosts
+- name: Create apache vhosts with declared templates
   shell:
     sudo nine-manage-vhosts virtual-host create {{ item.0.domain }} --webroot={{ item.0.documentroot }} --template={{ item.0.template | default ('default') }}
   notify: Restart Apache
   with_together:
-    - apache_vhosts
-    - apache_vhost_conf.results
-  when: item.1.stat.exists != True and item.0.vhost_status == 1
+    - '{{ apache_vhosts }}'
+    - '{{ apache_vhost_conf.results }}'
+  when: item.1.stat.exists != True and item.0.vhost_status == 1 and item.0.template != 'default_letsencrypt_https'
+
+- name: Create apache vhosts with intended Letsencrypt SSL templates
+  shell:
+    sudo nine-manage-vhosts virtual-host create {{ item.0.domain }} --webroot={{ item.0.documentroot }} --template=default
+  notify: Restart Apache
+  with_together:
+    - '{{ apache_vhosts }}'
+    - '{{ apache_vhost_conf.results }}'
+  when: item.1.stat.exists != True and item.0.vhost_status == 1 and item.0.template == 'default_letsencrypt_https'
+
+- name: Create Letsencrypt SSL certificates for new vhosts
+  shell:
+    sudo nine-manage-vhosts certificate create --virtual-host={{ item.0.domain }}
+  notify: Restart Apache
+  with_together:
+    - '{{ apache_vhosts }}'
+    - '{{ apache_vhost_conf.results }}'
+  when: item.1.stat.exists != True and item.0.vhost_status == 1 and item.0.template == 'default_letsencrypt_https'
+
+- name: Update new apache vhosts with their new Letsencrypt SSL Template
+  shell:
+    sudo nine-manage-vhosts virtual-host update {{ item.0.domain }} --webroot={{ item.0.documentroot }} --template={{ item.0.template | default ('default') }}
+  notify: Restart Apache
+  with_together:
+    - '{{ apache_vhosts }}'
+    - '{{ apache_vhost_conf.results }}'
+  when: item.1.stat.exists != True and item.0.vhost_status == 1 and item.0.template == 'default_letsencrypt_https'

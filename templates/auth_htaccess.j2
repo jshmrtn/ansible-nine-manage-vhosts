@@ -1,0 +1,11 @@
+AuthType Basic
+AuthName "{{ item.0.domain }}"
+AuthUserFile /home/www-data/htpasswd/{{ item.0.domain }}
+SetEnvIf Request_URI "(\.well-known)" allow
+Require valid-user
+Order allow,deny
+Allow from env=allow
+{% for ip in item.0.allowed_ips %}
+Allow from {{ ip }}
+{% endfor %}
+satisfy any

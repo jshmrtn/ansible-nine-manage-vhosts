@@ -5,5 +5,5 @@
   shell:
     sudo nine-manage-vhosts alias remove {{ item.aliasdomain }} --virtual-host={{ item.targetdomain }}
   notify: Restart Apache
-  with_items: apache_aliases
+  with_items: '{{ apache_aliases }}'
   when: item.alias_status == 0 and item.alias_create == 0

@@ -2,10 +2,11 @@
 
 - stat: path=/etc/apache2/user-vhosts/{{ item.domain }}.conf
   register: apache_vhost_conf
-  with_items: apache_vhosts
+  with_items: '{{ apache_vhosts }}'
 
 - include: virtual-host-remove.yml
 - include: virtual-host-update.yml
 - include: virtual-host-create.yml
 - include: alias-remove.yml
 - include: alias-create.yml
+- include: htpasswd.yml

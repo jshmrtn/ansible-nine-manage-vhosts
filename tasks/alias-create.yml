@@ -5,5 +5,30 @@
   shell:
     sudo nine-manage-vhosts alias create {{ item.aliasdomain }} --virtual-host={{ item.targetdomain }}
   notify: Restart Apache
-  with_items: apache_aliases
+  with_items: '{{ apache_aliases }}'
   when: item.alias_status == 1 and item.alias_create == 1
+
+- name: Collect vhosts for reload because of changed aliases
+  set_fact:
+    update_certificates: "{{ update_certificates }} + [ '{{ item.targetdomain }}' ]"
+  with_items: '{{ apache_aliases }}'
+  when: item.alias_status == 1 and item.alias_create == 1
+
+- debug:
+    msg: "update_certificates is {{ update_certificates | unique }}"
+
+- name: Update existing apache vhosts with new aliases if they use Letsencrypt
+  shell:
+    sudo nine-manage-vhosts certificate create --virtual-host={{ item.1 }}
+  notify: Restart Apache
+  with_together:
+    - '{{ apache_vhosts }}'
+    - '{{ update_certificates | unique }}'
+  when: item.0.vhost_status == 1 and item.0.template == 'default_letsencrypt_https' and item.0.domain == item.1
+
+- debug:
+    msg: "Updated vhost {{ item.1 }} because of changed alias"
+  with_together:
+    - '{{ apache_vhosts }}'
+    - '{{ update_certificates | unique }}'
+  when: item.0.vhost_status == 1 and item.0.template == 'default_letsencrypt_https' and item.0.domain == item.1
